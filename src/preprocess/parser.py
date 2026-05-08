@@ -88,7 +88,7 @@ if __name__ == "__main__":
     from config import RAW_DATA_DIR
     test_file = RAW_DATA_DIR / "test.log"
     if test_file.exists():
-        result = parse_log_file(str(test_file))
+        result = parse_log_file(test_file)
         print("解析结果：")
         for item in result:
             print(item)

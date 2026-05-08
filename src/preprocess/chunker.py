@@ -64,6 +64,8 @@ def chunk_logs(logs: list[dict[str, str]], chunk_size: int = 500, overlap: int =
                 chunk_num += 1
                 start += actual_step
 
+    for i, chunk in enumerate(chunks):
+        chunk["id"] = f"char_{i}"
     return chunks
 
 def chunk_by_time(logs: list[dict[str, str]], time_window_minutes: int = 5) -> list[dict]:
@@ -120,11 +122,13 @@ def chunk_by_time(logs: list[dict[str, str]], time_window_minutes: int = 5) -> l
             current_chunk.append(log)
         else:
             # 超过时间窗口，保存当前块，开始新块
-            chunk_text = "\n".join([l["message"] for l in current_chunk])
+            time_range = f"{current_chunk[0].get('time', '')} - {current_chunk[-1].get('time', '')}"
+            chunk_text = f"[{time_range}]\n" + "\n".join([l["message"] for l in current_chunk])
             chunks.append({
                 "text": chunk_text,
                 "metadata": {
                     "time": current_chunk[0].get("time", ""),
+                    "time_range": time_range,
                     "level": current_chunk[-1].get("level", "INFO"),
                     "chunk_type": "time_window",
                     "log_count": len(current_chunk)
@@ -137,17 +141,21 @@ def chunk_by_time(logs: list[dict[str, str]], time_window_minutes: int = 5) -> l
 
     # ===== 处理最后一个块 =====
     if current_chunk:
-        chunk_text = "\n".join([l["message"] for l in current_chunk])
+        time_range = f"{current_chunk[0].get('time', '')} - {current_chunk[-1].get('time', '')}"
+        chunk_text = f"[{time_range}]\n" + "\n".join([l["message"] for l in current_chunk])
         chunks.append({
             "text": chunk_text,
             "metadata": {
                 "time": current_chunk[0].get("time", ""),
+                "time_range": time_range,
                 "level": current_chunk[-1].get("level", "INFO"),
                 "chunk_type": "time_window",
                 "log_count": len(current_chunk)
             }
         })
     
+    for i, chunk in enumerate(chunks):
+        chunk["id"] = f"time_{i}"
     return chunks
 
 
@@ -168,8 +176,8 @@ if __name__ == "__main__":
     print(f"输出: {len(chunks)} 个块\n")
     
     # 打印每个块
-    for i, chunk in enumerate(chunks):
-        print(f"--- 块 {i+1} ---")
+    for chunk in chunks:
+        print(f"--- 块 {chunk['id']} ---")
         print(f"内容: {chunk['text'][:50]}...")
         print(f"字符数: {len(chunk['text'])}")
         print(f"元数据: {chunk['metadata']}")
@@ -190,8 +198,8 @@ if __name__ == "__main__":
     print(f"输入: {len(test_logs_time)} 条日志")
     print(f"输出: {len(chunks)} 个时间块\n")
 
-    for i, chunk in enumerate(chunks):
-        print(f"--- 块 {i+1} ---")
+    for chunk in chunks:
+        print(f"--- 块 {chunk['id']} ---")
         print(f"内容: {chunk['text']}")
         print(f"日志数: {chunk['metadata']['log_count']}")
         print()
