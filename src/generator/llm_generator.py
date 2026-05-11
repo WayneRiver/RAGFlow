@@ -94,6 +94,7 @@ class LLMGenerator:
             "2. 先指出故障根因，再给修复步骤\n"
             "3. 按严重程度标注：致命 / 严重 / 警告 / 提示\n"
             "4. 回答要简洁，避免空话\n"
+            "5. 回复字数控制在 200 字以内\n"
     )
 
     def _build_prompt(self, query: str, context_docs: list[dict]) -> str:
@@ -109,8 +110,11 @@ class LLMGenerator:
         context = "\n".join(context_lines)
 
         prompt = (
+            f"## 角色\n你是一个专业的运维工程师，擅长分析日志定位故障原因。\n\n"
+            f"## 规则\n你必须严格基于以下提供的日志内容回答问题，"
+            f"不要添加日志中没有的信息。如果日志无法回答问题，请如实说明。\n\n"
             f"## 用户问题\n{query}\n\n"
-            f"## 相关日志\n{context}\n\n"
+            f"## 相关日志（必须基于这些内容回答）\n{context}\n\n"
             f"请分析故障原因并给出修复建议。"
         )
         return prompt

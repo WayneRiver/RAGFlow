@@ -41,6 +41,7 @@ class BGEReranker:
         model_name = model_name or RERANK_MODEL
 
         self.reranker = FlagReranker(model_name, use_fp16=use_fp16)
+        
         print(f"BGE 重排器初始化完成: {model_name}")
     
     def rerank(self, query: str, documents: list[dict], top_k: int = None) -> list[dict]:

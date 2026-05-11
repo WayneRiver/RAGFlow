@@ -23,7 +23,7 @@ if not DASHSCOPE_API_KEY:
 # 模型配置
 LLM_MODEL = "qwen-plus"  # 对话模型
 EMBEDDING_MODEL = "text-embedding-v4"  # 向量模型
-RERANK_MODEL = "BAAI/bge-reranker-base"  # 重排模型
+RERANK_MODEL = "BAAI/bge-reranker-v2-m3"  # 重排模型
 
 # ChromaDB 配置
 CHROMA_PERSIST_DIR = str(PROCESSED_DATA_DIR / "chroma_db")

@@ -10,7 +10,9 @@ dependencies = [
     "fastapi>=0.136.1",
     "flagembedding>=1.4.0",
     "jieba>=0.42.1",
+    "langchain-community>=0.4.1",
     "python-dotenv>=1.2.2",
+    "ragas>=0.4.3",
     "rank-bm25>=0.2.2",
     "uvicorn>=0.46.0",
 ]

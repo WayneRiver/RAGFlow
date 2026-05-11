@@ -27,10 +27,11 @@ def chunk_logs(logs: list[dict[str, str]], chunk_size: int = 500, overlap: int =
 
     for i, log in enumerate(logs):
         message = log.get("message", "")
+        time = log.get("time", "")
 
         if len(message) <= chunk_size or chunk_size <= overlap:
             chunks.append({
-                "text": message,
+                "text": time + " - " + message,
                 "metadata": {
                     "time": log.get("time", ""),
                     "level": log.get("level", "INFO"),
@@ -48,7 +49,7 @@ def chunk_logs(logs: list[dict[str, str]], chunk_size: int = 500, overlap: int =
             while start < len(message):
                 # 取出当前块
                 end = start + chunk_size
-                chunk_text = message[start:end]
+                chunk_text = time + " - " + message[start:end]
 
                 chunks.append({
                     "text": chunk_text,
